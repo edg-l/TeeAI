@@ -51,7 +51,7 @@ class NetClient:
             try:
                 buffer, address = self.socket.recvfrom(NET_MAX_PACKETSIZE)
             except BlockingIOError:
-                continue # caused by non blocking read
+                return False # caused by non blocking read
 
             addr.ip = bytearray(address[0].encode())
             addr.port = address[1]
