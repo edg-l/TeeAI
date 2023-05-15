@@ -134,6 +134,7 @@ class NetConnection:
         self.error_string = ""
         self.state = NET_CONNSTATE_CONNECT
         self.send_control(NET_CTRLMSG_CONNECT, SECURITY_TOKEN_MAGIC)
+        self.last_recv_time = time_get()
         return True
 
     def disconnect(self, reason: str = ""):
@@ -171,12 +172,11 @@ class NetConnection:
 
         self.timeout_situation = False
 
-        # TODO: uncomment
-        # if self.state != NET_CONNSTATE_OFFLINE and self.state != NET_CONNSTATE_OFFLINE \
-        #         and (now - self.last_recv_time) > time_freq():
-        #     self.state = NET_CONNSTATE_ERROR
-        #     self.error_string = "Timeout"
-        #     self.timeout_situation = True
+        if self.state != NET_CONNSTATE_OFFLINE and self.state != NET_CONNSTATE_OFFLINE \
+                and (now - self.last_recv_time) > time_freq() * 100:
+            self.state = NET_CONNSTATE_ERROR
+            self.error_string = "Timeout"
+            self.timeout_situation = True
 
         # Fix resends
         # TODO: not sure about this part
