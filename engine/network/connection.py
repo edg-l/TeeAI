@@ -149,6 +149,7 @@ class NetConnection:
 
             if reason != self.error_string:
                 self.error_string = reason
+        print(f"disconnect reason={reason}")
         self.reset()
 
     def init(self, _socket: socket, block_close_msg: bool):
@@ -170,11 +171,12 @@ class NetConnection:
 
         self.timeout_situation = False
 
-        if self.state != NET_CONNSTATE_OFFLINE and self.state != NET_CONNSTATE_OFFLINE \
-                and (now - self.last_recv_time) > time_freq():
-            self.state = NET_CONNSTATE_ERROR
-            self.error_string = "Timeout"
-            self.timeout_situation = True
+        # TODO: uncomment
+        # if self.state != NET_CONNSTATE_OFFLINE and self.state != NET_CONNSTATE_OFFLINE \
+        #         and (now - self.last_recv_time) > time_freq():
+        #     self.state = NET_CONNSTATE_ERROR
+        #     self.error_string = "Timeout"
+        #     self.timeout_situation = True
 
         # Fix resends
         # TODO: not sure about this part

@@ -58,5 +58,5 @@ class NetRecvUnpacker:
             chunk.client_id = self.client_id
             chunk.address = self.address
             chunk.flags = header.flags
-            chunk.data = self.data
+            chunk.data = self.data.chunk_data
             return True

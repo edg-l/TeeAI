@@ -59,7 +59,7 @@ class NetClient:
             if len(buffer) < 0:
                 break
 
-            if NetBase.unpack_packet(self.recv_unpacker.buffer, self.recv_unpacker.data):
+            if NetBase.unpack_packet(buffer, self.recv_unpacker.data):
                 if self.recv_unpacker.data.flags & NET_PACKETFLAG_CONNLESS:
                     chunk.flags = NETSENDFLAG_CONNLESS
                     chunk.client_id = -1
