@@ -99,7 +99,7 @@ class NetPacketConstruct:
         self.ack: int = None
         self.num_chunks: int = 0
         # Size NET_MAX_PAYLOAD
-        self.chunk_data: bytearray = None
+        self.chunk_data: bytearray = bytearray()
         self.chunk_data_index: int = None
         # Size 4
         self.extra_data: bytearray = None

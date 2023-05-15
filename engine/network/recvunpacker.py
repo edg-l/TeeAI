@@ -9,7 +9,7 @@ class NetRecvUnpacker:
         self.connection: NetConnection = None
         self.current_cunk: int = None
         self.client_id: int = None
-        self.data: NetPacketConstruct = None
+        self.data: NetPacketConstruct = NetPacketConstruct()
         self.buffer = bytearray(NET_MAX_PACKETSIZE)
         self.clear()
 

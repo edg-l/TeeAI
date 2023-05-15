@@ -3,7 +3,16 @@ import socket
 
 from .network import NetAddr, NetPacketConstruct
 from ..huffman import huffman
-from .constants import NET_PACKETFLAG_CONTROL, NET_SECURITY_TOKEN_UNSUPPORTED, NET_PACKETFLAG_COMPRESSION
+from .constants import \
+    NET_PACKETFLAG_CONTROL, \
+    NET_SECURITY_TOKEN_UNSUPPORTED, \
+    NET_PACKETFLAG_COMPRESSION, \
+    NET_PACKETHEADERSIZE, \
+    NET_MAX_PACKETSIZE, \
+    NET_PACKETFLAG_CONNLESS, \
+    NET_HEADER_EXTENDED, \
+    NET_MAX_SEQUENCE, \
+    NET_PACKETFLAG_EXTENDED
 
 class NetBase:
     compress = huffman.compress
