@@ -1,6 +1,8 @@
 from .network import *
 from .recvunpacker import NetRecvUnpacker
 from .netbase import NetBase
+from .connection import NetConnection
+
 from socket import socket, AF_INET, SOCK_DGRAM, SOL_SOCKET, SO_BROADCAST, SO_RCVBUF, IPPROTO_IP, IP_TOS
 
 

@@ -1,6 +1,6 @@
 from .network import *
 from .netbase import NetBase
-
+from .connection import NetConnection
 
 class NetRecvUnpacker:
     def __init__(self):

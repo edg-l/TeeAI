@@ -1,6 +1,9 @@
-from .network import *
-from ..huffman import huffman
+import sys
+import socket
 
+from .network import NetAddr, NetPacketConstruct
+from ..huffman import huffman
+from .constants import NET_PACKETFLAG_CONTROL, NET_SECURITY_TOKEN_UNSUPPORTED, NET_PACKETFLAG_COMPRESSION
 
 class NetBase:
     compress = huffman.compress
