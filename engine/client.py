@@ -138,7 +138,7 @@ class Client:
         msg = MsgPacker(NetMsg.INFO.value)
         msg.add_str(GAME_NETVERSION, 128)
         msg.add_str("", 128)
-        self.send_msg_exy(msg, MsgFlags.VITAL.value | MsgFlags.VITAL.value)
+        self.send_msg_exy(msg, MsgFlags.VITAL.value | MsgFlags.FLUSH.value)
 
     def send_enter_game(self):
         msg = MsgPacker(NetMsg.ENTERGAME.value)

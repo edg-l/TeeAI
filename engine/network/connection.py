@@ -20,7 +20,7 @@ class NetConnection:
         self.last_send_time: int = None
 
         self.error_string: str = None
-        self.construct: NetPacketConstruct = None
+        self.construct: NetPacketConstruct = NetPacketConstruct()
 
         self.peer_address: NetAddr = None
         self.socket: socket = None
@@ -58,7 +58,7 @@ class NetConnection:
         self.construct.ack = self.ack
         NetBase.send_packet(self.socket, self.peer_address, self.construct, self.security_token)
         self.last_send_time = time_get()
-        self.construct = None
+        self.construct = NetPacketConstruct()
         return num_chunks
 
     def queue_chunks_ex(self, flags: int, data: bytearray, sequence: int):

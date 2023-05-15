@@ -44,7 +44,7 @@ class NetChunk:
         self.client_id: int = None
         self.address: NetAddr = None
         self.data: bytearray = None
-        self.flags: int = None
+        self.flags: int = 0
         self.extra_data: None = None
 
     def __len__(self):
@@ -95,14 +95,14 @@ class NetChunkResend:
 
 class NetPacketConstruct:
     def __init__(self, ):
-        self.flags: int = None
+        self.flags: int = 0
         self.ack: int = None
         self.num_chunks: int = 0
         # Size NET_MAX_PAYLOAD
         self.chunk_data: bytearray = bytearray()
         self.chunk_data_index: int = 0
         # Size 4
-        self.extra_data: bytearray = None
+        self.extra_data: bytearray = bytearray()
 
     def __len__(self):
         return len(self.chunk_data)
