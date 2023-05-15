@@ -1,6 +1,6 @@
 from .network import *
 from .netbase import NetBase
-
+from .connection import NetConnection
 
 class NetRecvUnpacker:
     def __init__(self):
@@ -9,7 +9,7 @@ class NetRecvUnpacker:
         self.connection: NetConnection = None
         self.current_cunk: int = None
         self.client_id: int = None
-        self.data: NetPacketConstruct = None
+        self.data: NetPacketConstruct = NetPacketConstruct()
         self.buffer = bytearray(NET_MAX_PACKETSIZE)
         self.clear()
 
@@ -58,5 +58,5 @@ class NetRecvUnpacker:
             chunk.client_id = self.client_id
             chunk.address = self.address
             chunk.flags = header.flags
-            chunk.data = self.data
+            chunk.data = self.data.chunk_data
             return True

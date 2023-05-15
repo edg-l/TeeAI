@@ -1,6 +1,8 @@
 from .network import *
 from .recvunpacker import NetRecvUnpacker
 from .netbase import NetBase
+from .connection import NetConnection
+
 from socket import socket, AF_INET, SOCK_DGRAM, SOL_SOCKET, SO_BROADCAST, SO_RCVBUF, IPPROTO_IP, IP_TOS
 
 
@@ -33,6 +35,7 @@ class NetClient:
             self.disconnect(self.connection.error_string)
 
     def connect(self, addr: NetAddr):
+        self.socket.bind(('', 0))
         self.connection.connect(addr)
 
     def reset_err_string(self):
@@ -44,14 +47,19 @@ class NetClient:
                 return 1
 
             addr = NetAddr()
-            buffer, address = self.socket.recvfrom(NET_MAX_PACKETSIZE)
+
+            try:
+                buffer, address = self.socket.recvfrom(NET_MAX_PACKETSIZE)
+            except BlockingIOError:
+                continue # caused by non blocking read
+
             addr.ip = bytearray(address[0].encode())
             addr.port = address[1]
 
             if len(buffer) < 0:
                 break
 
-            if NetBase.unpack_packet(self.recv_unpacker.buffer, self.recv_unpacker.data):
+            if NetBase.unpack_packet(buffer, self.recv_unpacker.data):
                 if self.recv_unpacker.data.flags & NET_PACKETFLAG_CONNLESS:
                     chunk.flags = NETSENDFLAG_CONNLESS
                     chunk.client_id = -1

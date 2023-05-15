@@ -42,7 +42,7 @@ class Client:
             else:
                 self.process_server_packet(packet)
 
-    def process_server_packet(self, packet: NetChunk):
+    def process_server_packet(self, packet: NetChunk) -> None:
         unpacker = Unpacker()
         unpacker.reset(packet.data)
 
