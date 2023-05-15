@@ -1,19 +1,32 @@
 from typing import List
 
 FREQ_TABLE = [
-    1 << 30, 4545, 2657, 431, 1950, 919, 444, 482, 2244, 617, 838, 542, 715, 1814, 304, 240, 754, 212, 647, 186,
-    283, 131, 146, 166, 543, 164, 167, 136, 179, 859, 363, 113, 157, 154, 204, 108, 137, 180, 202, 176,
-    872, 404, 168, 134, 151, 111, 113, 109, 120, 126, 129, 100, 41, 20, 16, 22, 18, 18, 17, 19,
-    16, 37, 13, 21, 362, 166, 99, 78, 95, 88, 81, 70, 83, 284, 91, 187, 77, 68, 52, 68,
-    59, 66, 61, 638, 71, 157, 50, 46, 69, 43, 11, 24, 13, 19, 10, 12, 12, 20, 14, 9,
-    20, 20, 10, 10, 15, 15, 12, 12, 7, 19, 15, 14, 13, 18, 35, 19, 17, 14, 8, 5,
-    15, 17, 9, 15, 14, 18, 8, 10, 2173, 134, 157, 68, 188, 60, 170, 60, 194, 62, 175, 71,
-    148, 67, 167, 78, 211, 67, 156, 69, 1674, 90, 174, 53, 147, 89, 181, 51, 174, 63, 163, 80,
-    167, 94, 128, 122, 223, 153, 218, 77, 200, 110, 190, 73, 174, 69, 145, 66, 277, 143, 141, 60,
-    136, 53, 180, 57, 142, 57, 158, 61, 166, 112, 152, 92, 26, 22, 21, 28, 20, 26, 30, 21,
-    32, 27, 20, 17, 23, 21, 30, 22, 22, 21, 27, 25, 17, 27, 23, 18, 39, 26, 15, 21,
-    12, 18, 18, 27, 20, 18, 15, 19, 11, 17, 33, 12, 18, 15, 19, 18, 16, 26, 17, 18,
-    9, 10, 25, 22, 22, 17, 20, 16, 6, 16, 15, 20, 14, 18, 24, 335, 1517]
+    1 << 30, 4545, 2657, 431, 1950, 919, 444, 482, 2244,
+    617, 838, 542, 715, 1814, 304, 240, 754, 212, 647, 186,
+    283, 131, 146, 166, 543, 164, 167, 136, 179, 859, 363,
+    113, 157, 154, 204, 108, 137, 180, 202, 176,
+    872, 404, 168, 134, 151, 111, 113, 109, 120,
+    126, 129, 100, 41, 20, 16, 22, 18, 18, 17, 19,
+    16, 37, 13, 21, 362, 166, 99, 78, 95, 88, 81,
+    70, 83, 284, 91, 187, 77, 68, 52, 68,
+    59, 66, 61, 638, 71, 157, 50, 46, 69, 43, 11,
+    24, 13, 19, 10, 12, 12, 20, 14, 9,
+    20, 20, 10, 10, 15, 15, 12, 12, 7, 19, 15, 14,
+    13, 18, 35, 19, 17, 14, 8, 5,
+    15, 17, 9, 15, 14, 18, 8, 10, 2173, 134,
+    157, 68, 188, 60, 170, 60, 194, 62, 175, 71,
+    148, 67, 167, 78, 211, 67, 156, 69, 1674, 90,
+    174, 53, 147, 89, 181, 51, 174, 63, 163, 80,
+    167, 94, 128, 122, 223, 153, 218, 77, 200, 110,
+    190, 73, 174, 69, 145, 66, 277, 143, 141, 60,
+    136, 53, 180, 57, 142, 57, 158, 61, 166, 112,
+    152, 92, 26, 22, 21, 28, 20, 26, 30, 21,
+    32, 27, 20, 17, 23, 21, 30, 22, 22, 21, 27,
+    25, 17, 27, 23, 18, 39, 26, 15, 21,
+    12, 18, 18, 27, 20, 18, 15, 19, 11, 17, 33,
+    12, 18, 15, 19, 18, 16, 26, 17, 18,
+    9, 10, 25, 22, 22, 17, 20, 16, 6, 16,
+    15, 20, 14, 18, 24, 335, 1517]
 
 HUFFMAN_EOF_SYMBOL = 256
 HUFFMAN_MAX_SYMBOLS = HUFFMAN_EOF_SYMBOL + 1
@@ -24,32 +37,32 @@ HUFFMAN_LUTMASK = HUFFMAN_LUTSIZE - 1
 
 
 class Node:
-    def __init__(self):
-        self.bits: int = None
-        self.numbits: int = None
+    def __init__(self) -> None:
+        self.bits: int
+        self.numbits: int
         # Leafs
-        self.left: int = None
-        self.right: int = None
+        self.left: int
+        self.right: int
 
-        self.symbol: int = None
+        self.symbol: int
 
     def __eq__(self, other):
         return self.symbol == other.symbol
 
 
 class HuffmanConstructNode:
-    def __init__(self):
-        self.node_id: int = None
-        self.frequency: int = None
+    def __init__(self) -> None:
+        self.node_id: int
+        self.frequency: int
 
 
 class Huffman:
     def __init__(self, frequencies: List[int]):
         self.nodes: List[Node] = [Node() for _ in range(HUFFMAN_MAX_NODES)]
         # list of index of nodes
-        self.decode_lut: List[int] = [None for _ in range(HUFFMAN_LUTSIZE)]
-        self.num_nodes: int = None
-        self.start_node_index: int = None
+        self.decode_lut: List[int] = [0 for _ in range(HUFFMAN_LUTSIZE)]
+        self.num_nodes: int
+        self.start_node_index: int
 
         self.construct_tree(frequencies)
 
@@ -74,7 +87,9 @@ class Huffman:
 
     def set_bits_r(self, node_index: int, bits: int, depth: int):
         if self.nodes[node_index].right != 0xffff:
-            self.set_bits_r(self.nodes[node_index].right, bits | (1 << depth), depth + 1)
+            self.set_bits_r(
+                    self.nodes[node_index].right,
+                    bits | (1 << depth), depth + 1)
         if self.nodes[node_index].left != 0xffff:
             self.set_bits_r(self.nodes[node_index].left, bits, depth + 1)
 
@@ -83,20 +98,27 @@ class Huffman:
             self.nodes[node_index].numbits = depth
 
     @staticmethod
-    def bubble_sort(index_list: List[int], node_list: List[HuffmanConstructNode], size: int):
+    def bubble_sort(
+            index_list: List[int],
+            node_list: List[HuffmanConstructNode],
+            size: int
+    ):
         changed = True
         while changed:
             changed = False
             for i in range(size - 1):
-                if node_list[index_list[i]].frequency < node_list[index_list[i + 1]].frequency:
+                freq = node_list[index_list[i]].frequency
+                next_freq = node_list[index_list[i + 1]].frequency
+                if freq < next_freq:
                     index_list[i], index_list[i + 1] = index_list[i + 1], index_list[i]
                     changed = True
             size -= 1
         return index_list
 
     def construct_tree(self, frequencies: List[int]):
-        nodes_left_storage: List[HuffmanConstructNode] = [HuffmanConstructNode() for _ in range(HUFFMAN_MAX_SYMBOLS)]
-        nodes_left: List[int] = [None for _ in range(HUFFMAN_MAX_SYMBOLS)]
+        nodes_left_storage: List[HuffmanConstructNode] = [
+                HuffmanConstructNode() for _ in range(HUFFMAN_MAX_SYMBOLS)]
+        nodes_left: List[int] = [0 for _ in range(HUFFMAN_MAX_SYMBOLS)]
         num_nodes_left = HUFFMAN_MAX_SYMBOLS
 
         for i in range(HUFFMAN_MAX_SYMBOLS):
@@ -115,11 +137,16 @@ class Huffman:
         self.num_nodes = HUFFMAN_MAX_SYMBOLS
 
         while num_nodes_left > 1:
-            nodes_left = Huffman.bubble_sort(nodes_left, nodes_left_storage, num_nodes_left)
+            nodes_left = Huffman.bubble_sort(
+                    nodes_left,
+                    nodes_left_storage,
+                    num_nodes_left)
 
             self.nodes[self.num_nodes].numbits = 0
-            self.nodes[self.num_nodes].left = nodes_left_storage[nodes_left[num_nodes_left - 1]].node_id
-            self.nodes[self.num_nodes].right = nodes_left_storage[nodes_left[num_nodes_left - 2]].node_id
+            self.nodes[self.num_nodes].left = nodes_left_storage[
+                    nodes_left[num_nodes_left - 1]].node_id
+            self.nodes[self.num_nodes].right = nodes_left_storage[
+                    nodes_left[num_nodes_left - 2]].node_id
 
             freq1 = nodes_left_storage[nodes_left[num_nodes_left - 1]].frequency
             freq2 = nodes_left_storage[nodes_left[num_nodes_left - 2]].frequency
@@ -132,12 +159,12 @@ class Huffman:
         self.start_node_index = self.num_nodes - 1
         self.set_bits_r(self.start_node_index, 0, 0)
 
-    def compress(self, inp_buffer: bytearray, start_index: int = 0, size: int = None):
+    def compress(self, inp_buffer: bytearray, start_index: int = 0, size: int = -1):
         output = bytearray()
         bits = 0
         bitcount = 0
 
-        if size is None:
+        if size == -1:
             size = len(inp_buffer)
         else:
             size += start_index
@@ -163,7 +190,7 @@ class Huffman:
         output.append(bits)
         return output
 
-    def decompress(self, inp_buffer: bytearray, start_index: int = 0, size: int = None):
+    def decompress(self, inp_buffer: bytearray, start_index: int = 0, size: int = -1):
         bits = 0
         bitcount = 0
         eof = self.nodes[HUFFMAN_EOF_SYMBOL]
@@ -171,7 +198,7 @@ class Huffman:
 
         src_index = start_index
 
-        if size is None:
+        if size == -1:
             size = len(inp_buffer)
         else:
             size += src_index
@@ -219,3 +246,4 @@ class Huffman:
 
 
 huffman = Huffman(FREQ_TABLE)
+
