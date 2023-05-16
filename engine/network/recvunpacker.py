@@ -3,27 +3,27 @@ from .netbase import NetBase
 from .connection import NetConnection
 
 class NetRecvUnpacker:
-    def __init__(self):
-        self.valid: bool = None
-        self.address: NetAddr = None
-        self.connection: NetConnection = None
-        self.current_cunk: int = None
-        self.client_id: int = None
+    def __init__(self) -> None:
+        self.valid: bool = False
+        self.address: NetAddr = NetAddr()
+        self.connection: NetConnection = NetConnection()
+        self.current_cunk: int = 0
+        self.client_id: int = 0
         self.data: NetPacketConstruct = NetPacketConstruct()
         self.buffer = bytearray(NET_MAX_PACKETSIZE)
         self.clear()
 
-    def clear(self):
+    def clear(self) -> None:
         self.valid = False
 
-    def start(self, address: NetAddr, conn: NetConnection, client_id: int):
+    def start(self, address: NetAddr, conn: NetConnection, client_id: int) -> None:
         self.address = address
         self.connection = conn
         self.client_id = client_id
         self.current_cunk = 0
         self.valid = True
 
-    def fetch_chunk(self, chunk: NetChunk):
+    def fetch_chunk(self, chunk: NetChunk) -> bool:
         header: NetChunkHeader = NetChunkHeader()
         end = len(self.data)
 

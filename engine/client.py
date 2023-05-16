@@ -11,14 +11,14 @@ CLIENT_VERSIONNR = 11044
 
 
 class Client:
-    def __init__(self):
+    def __init__(self) -> None:
         self.net_client = NetClient()
         self.map_download_chunk: int = 0
         self.state: int = 0
-        self.map_details_present: bool = None
-        self.map_details_name: str = None
-        self.map_details_sha256: bytearray = None
-        self.map_details_crc: int = None
+        self.map_details_present: bool = False
+        self.map_details_name: str = ""
+        self.map_details_sha256: bytearray = bytearray()
+        self.map_details_crc: int = 0
 
     def run(self, addr: NetAddr):
         self.net_client.open()
@@ -46,8 +46,8 @@ class Client:
         unpacker = Unpacker()
         unpacker.reset(packet.data)
 
-        msgid: int = None
-        sys: bool = None
+        msgid: int = 0
+        sys: bool = False
         uuid = bytearray()
 
         # TODO DO UnpackMessageID

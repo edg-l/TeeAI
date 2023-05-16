@@ -5,7 +5,7 @@ from typing import Deque
 from collections import deque
 
 SECURITY_TOKEN_MAGIC = bytearray("TKEN".encode())
-SHA256_DIGEST_LENGTH = 256 / 8
+SHA256_DIGEST_LENGTH: int = int(256 / 8)
 
 
 def to_security_token(data: bytearray):
@@ -13,11 +13,11 @@ def to_security_token(data: bytearray):
 
 
 class NetStats:
-    def __init__(self):
-        self.sent_packets: int = None
-        self.sent_bytes: int = None
-        self.recv_packets: int = None
-        self.recv_bytes: int = None
+    def __init__(self) -> None:
+        self.sent_packets: int = 0
+        self.sent_bytes: int = 0
+        self.recv_packets: int = 0
+        self.recv_bytes: int = 0
 
 
 class NetAddr:
@@ -40,24 +40,24 @@ class NetChunk:
     If the client id is 0 on client means the server
     """
 
-    def __init__(self):
-        self.client_id: int = None
-        self.address: NetAddr = None
-        self.data: bytearray = None
+    def __init__(self) -> None:
+        self.client_id: int = 0
+        self.address: NetAddr = NetAddr()
+        self.data: bytearray = bytearray()
         self.flags: int = 0
-        self.extra_data: None = None
+        self.extra_data: bytearray = bytearray()
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.data)
 
 
 class NetChunkHeader:
-    def __init__(self):
-        self.flags: int = None
-        self.size: int = None
-        self.sequence: int = None
+    def __init__(self) -> None:
+        self.flags: int = 0
+        self.size: int = 0
+        self.sequence: int = 0
 
-    def pack(self, data: bytearray):
+    def pack(self, data: bytearray) -> int:
         """Returns the new index"""
         index = len(data)
         data.extend([0] * 2)
@@ -72,7 +72,7 @@ class NetChunkHeader:
             return index + 3
         return index + 2
 
-    def unpack(self, index: int, data: bytearray):
+    def unpack(self, index: int, data: bytearray) -> int:
         self.flags = (data[index] >> 6) & 3
         self.size = ((data[index] & 0x3f) << 4) | (data[index + 1] & 0xf)
         self.sequence = -1
@@ -84,19 +84,19 @@ class NetChunkHeader:
 
 
 class NetChunkResend:
-    def __init__(self):
-        self.flags: int = None
-        self.size: int = None
-        self.data: bytearray = None
-        self.sequence: int = None
-        self.last_send_time: int = None
-        self.first_send_time: int = None
+    def __init__(self) -> None:
+        self.flags: int = 0
+        self.size: int = 0
+        self.data: bytearray = bytearray()
+        self.sequence: int = 0
+        self.last_send_time: int = 0
+        self.first_send_time: int = 0
 
 
 class NetPacketConstruct:
-    def __init__(self, ):
+    def __init__(self, ) -> None:
         self.flags: int = 0
-        self.ack: int = None
+        self.ack: int = 0
         self.num_chunks: int = 0
         # Size NET_MAX_PAYLOAD
         self.chunk_data: bytearray = bytearray()
@@ -104,7 +104,7 @@ class NetPacketConstruct:
         # Size 4
         self.extra_data: bytearray = bytearray()
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.chunk_data)
 
 

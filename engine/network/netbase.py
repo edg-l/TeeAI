@@ -19,7 +19,7 @@ class NetBase:
     decompress = huffman.decompress
 
     @staticmethod
-    def send_packet(_socket: socket, address: NetAddr, packet: NetPacketConstruct, security_token: int):
+    def send_packet(_socket: socket.socket, address: NetAddr, packet: NetPacketConstruct, security_token: int):
         if security_token != NET_SECURITY_TOKEN_UNSUPPORTED:
             packet.chunk_data += security_token.to_bytes(4, byteorder=sys.byteorder, signed=True)
 
@@ -40,7 +40,7 @@ class NetBase:
             _socket.sendto(buffer, (address.ip, address.port))
 
     @staticmethod
-    def send_packet_conless(_socket: socket, address: NetAddr,
+    def send_packet_conless(_socket: socket.socket, address: NetAddr,
                             data: bytearray, extended: bool, data_extra: bytearray):
         buffer = bytearray()
         data_offset = 6
@@ -56,7 +56,7 @@ class NetBase:
         _socket.sendto(buffer, (address.ip, address.port))
 
     @staticmethod
-    def send_control_msg(_socket: socket, address: NetAddr, ack: int,
+    def send_control_msg(_socket: socket.socket, address: NetAddr, ack: int,
                          control_msg: int, extra: bytearray, security_token: int):
         print("called")
         construct = NetPacketConstruct()

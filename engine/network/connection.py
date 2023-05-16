@@ -2,40 +2,40 @@ from .network import *
 from .netbase import NetBase
 
 class NetConnection:
-    def __init__(self):
-        self.sequence: int = None
-        self.ack: int = None
-        self.peer_ack: int = None
-        self.state: int = None  # unsigned
-        self.token: int = None
-        self.security_token: int = None
-        self.remote_closed: int = None
-        self.block_close_msg: int = None
-        self.unknown_seq: bool = None
+    def __init__(self) -> None:
+        self.sequence: int = 0
+        self.ack: int = 0
+        self.peer_ack: int = 0
+        self.state: int = 0  # unsigned
+        self.token: int = 0
+        self.security_token: int = 0
+        self.remote_closed: int = 0
+        self.block_close_msg: int = 0
+        self.unknown_seq: bool = False
 
-        self.buffer: Deque[NetChunkResend] = None
+        self.buffer: Deque[NetChunkResend] = deque([], maxlen=NET_CONN_BUFFERSIZE)
 
-        self.last_update_time: int = None
-        self.last_recv_time: int = None
-        self.last_send_time: int = None
+        self.last_update_time: int = 0
+        self.last_recv_time: int = 0
+        self.last_send_time: int = 0
 
-        self.error_string: str = None
+        self.error_string: str = ""
         self.construct: NetPacketConstruct = NetPacketConstruct()
 
-        self.peer_address: NetAddr = None
-        self.socket: socket = None
-        self.stats: NetStats = None
+        self.peer_address: NetAddr = NetAddr()
+        self.socket: socket = socket()
+        self.stats: NetStats = NetStats()
 
-        self.timeout_protected: bool = None
-        self.timeout_situation: bool = None
+        self.timeout_protected: bool = False
+        self.timeout_situation: bool = False
 
-    def signal_resend(self):
+    def signal_resend(self) -> None:
         raise NotImplementedError
 
-    def reset_stats(self):
-        self.stats = None
+    def reset_stats(self) -> None:
+        self.stats = NetStats()
         self.last_update_time = 0
-        self.peer_address = None
+        self.peer_address = NetAddr()
 
     def ack_chunks(self, ack: int):
         while True:
@@ -49,7 +49,7 @@ class NetConnection:
             else:
                 break
 
-    def flush(self):
+    def flush(self) -> int:
         num_chunks = self.construct.num_chunks
 
         if not num_chunks and not self.construct.flags:
@@ -61,7 +61,7 @@ class NetConnection:
         self.construct = NetPacketConstruct()
         return num_chunks
 
-    def queue_chunks_ex(self, flags: int, data: bytearray, sequence: int):
+    def queue_chunks_ex(self, flags: int, data: bytearray, sequence: int) -> bool:
         if self.state == NET_CONNSTATE_OFFLINE or self.state == NET_CONNSTATE_ERROR:
             return False
 
@@ -86,6 +86,9 @@ class NetConnection:
             resend.first_send_time = time_get()
             resend.last_send_time = resend.first_send_time
             self.buffer.append(resend)
+        else:
+            return False
+        return True
 
     def send_control(self, control_msg: int, extra: bytearray):
         self.last_send_time = time_get()
@@ -100,11 +103,11 @@ class NetConnection:
             self.sequence = (self.sequence + 1) % NET_MAX_SEQUENCE
         return self.queue_chunks_ex(flags, data, self.sequence)
 
-    def resend(self):
+    def resend(self) -> None:
         for x in self.buffer:
             self.resend_chunk(x)
 
-    def reset(self, rejoin=False):
+    def reset(self, rejoin=False) -> None:
         self.sequence = 0
         self.ack = 0
         self.peer_ack = 0
@@ -125,7 +128,7 @@ class NetConnection:
         self.buffer = deque([], maxlen=NET_CONN_BUFFERSIZE)
         self.construct = NetPacketConstruct()
 
-    def connect(self, addr: NetAddr):
+    def connect(self, addr: NetAddr) -> bool:
         if self.state != NET_CONNSTATE_OFFLINE:
             return False
 
@@ -137,7 +140,7 @@ class NetConnection:
         self.last_recv_time = time_get()
         return True
 
-    def disconnect(self, reason: str = ""):
+    def disconnect(self, reason: str = "") -> None:
         if self.state == NET_CONNSTATE_OFFLINE:
             return
 
@@ -153,14 +156,14 @@ class NetConnection:
         print(f"disconnect reason={reason}")
         self.reset()
 
-    def init(self, _socket: socket, block_close_msg: bool):
+    def init(self, _socket: socket, block_close_msg: bool) -> None:
         self.reset()
         self.reset_stats()
         self.socket = _socket
         self.block_close_msg = block_close_msg
         self.error_string = ""
 
-    def update(self):
+    def update(self) -> bool:
         now = time_get()
         # TODO: g_Config.m_ConnTimeoutProtection is missing here, it muls time_freq()
         if self.state == NET_CONNSTATE_ERROR and self.timeout_situation and (now - self.last_recv_time) > time_freq():
@@ -206,9 +209,9 @@ class NetConnection:
             if time_get() - self.last_send_time > time_freq() / 2:
                 self.send_control(NET_CTRLMSG_CONNECTACCEPT, SECURITY_TOKEN_MAGIC)
 
-        return 0
+        return False
 
-    def feed(self, packet: NetPacketConstruct, addr: NetAddr, security_token: int = NET_SECURITY_TOKEN_UNSUPPORTED):
+    def feed(self, packet: NetPacketConstruct, addr: NetAddr, security_token: int = NET_SECURITY_TOKEN_UNSUPPORTED) -> bool:
         if self.state != NET_CONNSTATE_OFFLINE and security_token != NET_SECURITY_TOKEN_UNKNOWN \
                 and security_token != NET_SECURITY_TOKEN_UNSUPPORTED:
             # supposed to have a valid token in this packet, check it
