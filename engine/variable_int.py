@@ -1,6 +1,8 @@
+from typing import Optional
+
 class VariableInt:
     @staticmethod
-    def pack(buffer: bytearray, i: int, index: int = None):
+    def pack(buffer: bytearray, i: int, index: Optional[int] = None) -> int:
         # set sign bit if i<0
 
         if index is None:

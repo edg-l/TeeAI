@@ -17,13 +17,13 @@ TEEWORLDS_NAMESPACE.extend([0xe0, 0x5d, 0xda, 0xaa, 0xc4, 0xe6, 0x4c, 0xfb,
 
 
 class Name:
-    def __init__(self):
+    def __init__(self) -> None:
         self.uuid = bytearray(UUID_SIZE)
         self.name: str = ""
 
 
 class UuidManager:
-    def __init__(self):
+    def __init__(self) -> None:
         self.names: List[Name] = []
 
     def register_name(self, _id: int, name: str):
@@ -64,9 +64,9 @@ class UuidManager:
     def calculate_uuid(name: str):
         # TODO: DO THIS
         _hash = md5(TEEWORLDS_NAMESPACE)
-        _hash.update(name)
+        _hash.update(name.encode())
 
-        result = _hash.digest()
+        result = bytearray(_hash.digest())
 
         result[6] &= 0x0f
         result[6] |= 0x30
