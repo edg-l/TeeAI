@@ -6,6 +6,10 @@ def test_huffman():
     expected = b'\x40\x02\x02\x02\x00\x40\x07\x03\x22\x01\x00\x01\x00\x01\x08\x40\x01\x04\x0b'
     assert decompressed == expected
 
+def test_huffman2():
+    compressed = b"\x00\x02.\x07\x00\x12!\xbc\'\xbd\'(\x00\x8a\x06\x84\x01\x00\x00\x00\x01\x00\x00\x00"
+    huffman.decompress(compressed)
+
 # TODO: this currently hangs
 # def test_huffman_empty():
 #     huffman.decompress(b'')
